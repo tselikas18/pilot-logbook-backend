@@ -67,21 +67,20 @@ export interface PreviousExperience {
   id: string;
   userId: string;
   role: 'PIC' | 'CP' | 'FE';
-  totalPICTime?: number;      // Total Pilot in Command hours
-  totalCopilotTime?: number;  // Total Copilot hours
-  totalEngineerTime?: number; // Total Flight Engineer hours
-  totalDayTime?: number;      // Total daytime hours
-  totalNightTime?: number;    // Total nighttime hours
-  totalInstrumentTime?: number; // Total instrument hours
-  totalInstructorTime?: number; // Total time as instructor
-  totalTestPilotTime?: number;  // Total time as test pilot
-  totalLandings?: number;     // Total number of landings
-  aircraftTypes?: {           // Summary of aircraft types flown
+  totalPICTime?: number;      
+  totalCopilotTime?: number; 
+  totalEngineerTime?: number;
+  totalDayTime?: number;      
+  totalNightTime?: number;    
+  totalInstrumentTime?: number; 
+  totalInstructorTime?: number;
+  totalTestPilotTime?: number;  
+  totalLandings?: number; 
+  aircraftTypes?: { 
     type: string;
     hours: number;
   }[];
-  remarks?: string;           // Any additional notes
-  upToDate: Date;             // Date up to which these hours are valid
+  upToDate: Date; 
   createdAt: Date;
   updatedAt: Date;
 }
