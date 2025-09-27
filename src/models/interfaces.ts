@@ -1,86 +1,81 @@
-export interface FlightForPilot {
-  id: string;
-  date: Date;
-  userRole: 'PIC' | 'CP';
-  aircraftType: string;    
-  registration: string;      
-  pilotInCommand: string;
-  isFlightInstructor: boolean;
-  isTestPilot: boolean;
-  copilot: string;
-  flightEngineers: {
-    name: string;
-    position: number; 
+import mongoose from "mongoose";
+
+interface TimestapedDocument {
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+interface BaseFlight extends TimestapedDocument {
+  userRole: 'pilot' | 'engineer';
+  date?: Date;
+  aircraftType?: string;    
+  registration?: string;
+  mission?: string;
+  route?: string;
+  remarks?: string;
+  dayTime?: number;
+  nightTime?: number;
+  instrumentTime?: number;
+  landings?: number;
+
+  pilotInCommand?: string;
+  copilot?: string;
+  flightEngineers?: {
+    name?: string;
+    position?: number; 
     isEssential?: boolean;
   }[];
-  mission: string;
-  route: string;
-  totalDayTime: number;
-  totalNightTime: number;
-  totalInstrumentTime: number;
-  instructorTime: boolean;
-  totalFlightTime: number;
-  landings: number;
-  remarks: string;
-  userId: string;
-  createdAt: Date;
-  updatedAt: Date;
 }
 
-export interface FlightForEngineer {
+interface FlightForPilot extends BaseFlight {
+  userRole: 'pilot';
   id: string;
-  date: Date;
-  aircraftType: string;     
-  registration: string;      
-  pilotInCommand: string;
-  copilot: string;
-  flightEngineers: {
-    name: string;
-    position: number;
-    isEssential?: boolean;
+  user_id: mongoose.Types.ObjectId | string;
+
+  isPicFlight: boolean;
+  isFlightInstructorFlight: boolean;
+  isTestPilotFlight: boolean;
+}
+
+interface FlightForEngineer extends BaseFlight {
+  userRole: 'engineer'; 
+  id: string;
+  user_id: mongoose.Types.ObjectId | string;
+  isNonEssentialEngineerFlight: boolean; 
+}
+
+export type Flight = FlightForPilot | FlightForEngineer;
+
+interface BasePreviousExperience extends TimestapedDocument {
+  id: string;
+  user_id: mongoose.Types.ObjectId | string;
+  role: 'Pilot' | 'Engineer';
+}
+
+interface PilotExperience extends BasePreviousExperience {
+  role: 'Pilot';
+  aircraftExperience: {
+    aircraftType: string;
+    totalPICTime: number;
+    totalCPTime: number;
+    totalDayTime: number;
+    totalNightTime: number;
+    totalInstrumentTime: number;
+    lastFlownDay?: Date;
+    lastFlownNight?: Date;
+    lastFlownInstrument?: Date;
   }[];
-  isEssentialEngineer: boolean;  
-  mission: string;
-  route: string;
-  totalDayTime: number;
-  totalNightTime: number;
-  totalFlightTime: number;
-  remarks: string;
-  userId: string;
-  userRole: 'FE'; // Always 'FE' for flight engineers
-  createdAt: Date;
-  updatedAt: Date;
 }
 
-export interface User {
-  id: string;
-  firstName: string;
-  lastName: string;
-  email: string;
-  role: 'PIC' | 'CP' | 'FE'; 
-  medicalExpiry: Date;
-  createdAt: Date;
-  updatedAt: Date;
-}
-
-export interface PreviousExperience {
-  id: string;
-  userId: string;
-  role: 'PIC' | 'CP' | 'FE';
-  totalPICTime?: number;      
-  totalCopilotTime?: number; 
-  totalEngineerTime?: number;
-  totalDayTime?: number;      
-  totalNightTime?: number;    
-  totalInstrumentTime?: number; 
-  totalInstructorTime?: number;
-  totalTestPilotTime?: number;  
-  totalLandings?: number; 
-  aircraftTypes?: { 
-    type: string;
-    hours: number;
+interface EngineerExperience extends BasePreviousExperience {
+  role: 'Engineer';
+  aircraftExperience: {
+    aircraftType: string;
+    totalDayTime: number;
+    totalNightTime: number;
+    lastFlownDay?: Date;
+    lastFlownNight?: Date;
   }[];
-  upToDate: Date; 
-  createdAt: Date;
-  updatedAt: Date;
 }
+
+export type PreviousExperience = PilotExperience | EngineerExperience;
